@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="script.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      //validates the enter key
+      function Validate(e) {
+        if (e.which == 13) {
+          return true;
+        }
+      }
+
+      //automatically generate a new line for each step. when the enter key is pressed, the event handler is triggered. the function validates that it was the enter key, that the input was not blank, and that it was the most recent input
+
+      $(".steps-container").on('keypress', '.steps', function(e) {
+        if (Validate(e) == true && this.value != "") {
+          var steps = document.getElementsByName('steps[]');
+          var length = steps.length;
+          if (this.value == steps[steps.length - 1].value) {
+            $(".steps-container").append('<br><br><input type="text" name="steps[]" class="steps" value="">');
+            $(".steps-container input").focus();
+          }
+
+        };
+      })
+
+      //the process is the same for trouble shooting steps.
+      $(".troubles-container").on('keypress', '.troubles', function(e) {
+        if (Validate(e) == true && this.value != "") {
+          var troubles = document.getElementsByName('troubles[]');
+          var length = troubles.length;
+          if (this.value == troubles[troubles.length - 1].value) {
+            $(".troubles-container").append('<br><br><input type="text" name="troubles[]" class="troubles" value="">');
+            $(".troubles-container input").focus();
+          }
+
+        };
+      })
+
+
+
+
+
+
+      //when the form is clicked,
+
+      $("#concat").click(
+        function() {
+          var steps = document.getElementsByName('steps[]');
+          var troubles = document.getElementsByName('troubles[]');
+          var summary = String($("#summary").val());
+          var trouble = String($("#trouble").val());
+          var opscon = String($("#opscon").val());
+          var info = String($("#info").val());
+          var step_string = "";
+          var trouble_string = "";
+
+          for (i = 0; i < steps.length; i++) {
+            if (String(steps[i].value) != "") {
+              step_string += "<br>•" + String(steps[i].value);
+            }
+          }
+
+          for (i = 0; i < troubles.length; i++) {
+            if (String(troubles[i].value) != "") {
+              trouble_string += "<br>•" + String(troubles[i].value);
+            }
+          }
+
+          $(".selectme").remove();
+
+
+          $(".content").append('<div class="selectme"><div id="selectme" name="concated" rows="4" cols="80"><br>  Summary of Current Issue: ' + summary + '<br><br>Troubleshooting Steps taken: ' + trouble_string + '<br><br>Next Steps:' +
+            step_string +
+            '<br><br>Relevant OpsCon info: ' + opscon + '<br><br>Additional information(Slack URL, related ticket numbers, etc.): ' + info + '</div>' + '<br>' + '      <button id="copier" type="button">Copy to Clipboard</button></div>');
+        });
+
+
+
+      function SelectText(element) {
+        var doc = document,
+          text = doc.getElementById(element),
+          range, selection;
+        if (doc.body.createTextRange) {
+          range = document.body.createTextRange();
+          range.moveToElementText(text);
+          range.select();
+        } else if (window.getSelection) {
+          selection = window.getSelection();
+          range = document.createRange();
+          range.selectNodeContents(text);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand('copy')
+        }
+      }
+
+
+
+      $('.content').on('click', '#copier', function() {
+        SelectText('selectme');
+      })
+
+
+
+
+    });
+  </script>
+  <style>
+    h1 {
+      color: black;
+    }
+
+    .content {
+      margin: auto;
+      width: 50%;
+      border: 3px solid green;
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+
+    input {
+      width: 80%;
+      height: 25px;
+      ]
+    }
+
+    textarea {
+      width: 80%;
+      height: 70px;
+    }
+
+    #selectme {
+      border: 1px solid black;
+      padding-bottom: 10px;
+      text-align: left;
+      word-wrap: break-word;
+      padding: 5%;
+    }
+  </style>
+  <title></title>
+  <link rel="stylesheet" href="css/master.css">
+</head>
+
+<body>
+  <div class="content">
+    <select class="template-type" name="">
+      <option value="case-work">Case Work</option>
+      <option value="intelligence">Support intelligence</option>
+      <option value="escalation">Escalation</option>
+    </select>
+    <div class="case-work">
+
+      <form name="my_form" class="case_work">
+        <h2>Summary of Current Issue</h2>
+        <textarea name="summary" id="summary"></textarea>
+        <div class="troubles-container">
+          <h2>Troubleshooting Steps</h2>
+          press enter for additional step
+          <input type="text" id="troubles" class="troubles" name="troubles[]" value="">
+        </div>
+        <div class="steps-container">
+          <h2>Next Steps</h2>
+          press enter for additional step
+          <input type="text" id="steps" class="steps" name="steps[]" value="">
+        </div>
+
+        <h2>Relevant OpsCon Info</h2>
+        <input type="text" id="opscon" value="">
+        <h2>Additional Information</h2>
+        <input type="text" id="info" value="">
+        <br>
+        <button id='concat' type="button" class="somebutton" name="button">Submit</button>
+
+      </form>
+    </div>
+    <div class="intelligence">
+      <h1>intelligence</h1>
+      <h2>Case Number</h2>
+      <input type="text" id="intel-case-number" value="">
+      <h2>Question</h2>
+      <input type="text" id="intel-question" value="">
+      <h2>Summary of Issue</h2>
+      <input type="text" id="intel-issue" value="">
+      <h2>Steps Taken by Agent</h2>
+      <div class="intel-steps">
+        <input type="text" id="intel-steps" name="intel-steps" value="">
+      </div>
+      <h2>Relevant Opscon Info</h2>
+      <input type="text" id="intel-opscon" value="">
+
+    </div>
+    <div class="escalation">
+      <h1>escalation</h1>
+      <h3>coming soon</h3>
+
+    </div>
+
+  </div>
+</body>
+
+</html>
